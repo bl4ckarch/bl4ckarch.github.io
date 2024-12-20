@@ -89,7 +89,7 @@ PORT     STATE SERVICE VERSION
 
 ![dashboard](/assets/blog/htb-chemistry/dashboard.png)
 
-- Trying to do some file upload bypass did not give anything correct, but there is an example cif file format we can download on the path [/static/example.cif](http://10.129.124.136:5000/static/example.cif)
+- Trying to do some file upload bypass did not give anything correct, but there is an example cif file format we can download on the path /static/example.cif
 - From there I stumbled upon a vulnerable python lib used using a simple google search. We came across a critical security vulnerability in the `JonesFaithfulTransformation.from_transformation_str()` method within the `pymatgen` library. This method insecurely utilizes eval() for processing input, enabling execution of arbitrary code when parsing untrusted input. This can be exploited when parsing a maliciously-created CIF file.
 - From there we created the vulnerable file and uploaded it to the server:
 
@@ -118,7 +118,7 @@ _space_group_magn.name_BNS  "P  n'  m  a'  "
 
 ### Shell as app
 
-- We created 3 CIF files containing a stager, a file that made the [shell.sh](http://shell.sh) executable, and the third file that executes the shell.sh:
+- We created 3 CIF files containing a stager, a file that made the shell.sh executable, and the third file that executes the shell.sh:
 
 ```bash
 [🔴][Oct 20, 2024 - 20:57:39 (CEST)] exegol-htb chemistry # rlwrap -cAr nc -lvnp 443
