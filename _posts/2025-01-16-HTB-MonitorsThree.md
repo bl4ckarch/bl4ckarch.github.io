@@ -5,11 +5,10 @@ category : writeup
 tags :  
 ---
 
-Machine Author(s): 
+Machine Author(s): ruycr4ft & kavigihan
 
 ## Description:
-
-
+This machine is a Medium linux machine, The machine is exploited by taking advantage of an Sql injection Vulnerability, which when leveraged permits us to gain access to a Cacti admin panel, This version of cacti is vulnerable to php command injection that leads us to Remote code execution, from where we gain higher privileges and successfully hack the box.
 #### Difficulty: `Medium`
 
 # Part 1: Enumeration & Foothold
