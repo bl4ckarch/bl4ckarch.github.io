@@ -7,6 +7,8 @@ tags :  easy CIF rce chisel
 
 Machine Author(s): [FistMatHAck](https://app.hackthebox.com/users/1076236)
 
+![site](/assets/blog/htb-chemistry/Chemistry.png)
+
 ## Description:
 
 This machine is a Easy linux machine, The machine is exploited by taking advantage of a vulnerability in the `pymatgen` library, where the `JonesFaithfulTransformation.from_transformation_str()` method improperly uses `eval()`, allowing code execution through a crafted CIF file. This leads to initial access, from which the attacker retrieves a database containing the user `rosa`'s password hash. Following this, an LFI vulnerability is exploited to obtain the SSH private key (`id_rsa`) of the root user, ultimately granting full root access to the system.
