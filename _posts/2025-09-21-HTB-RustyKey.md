@@ -5,7 +5,7 @@ category: CTF
 tags: hackthebox windows active-directory kerberos timeroast com-hijacking privilege-escalation bloodhound rbcd constrained-delegation hard-box writeup
 ---
 
-# RustyKey - HackTheBox Writeup
+RustyKey - HackTheBox Writeup
 
 ## Machine Information
 - **Name**: RustyKey  
