@@ -7,7 +7,6 @@ tags: rootkit, windows-kernel, driver-development, privilege-escalation, process
 author: bl4ckarch
 ---
 
-# Dans les Entrailles du Kernel Windows : Développement d'un Mini-Rootkit Éducatif
 
 La programmation au niveau kernel représente l'un des domaines les plus fascinants et techniques de l'informatique. Récemment, j'ai eu l'opportunité de plonger dans cet univers complexe à travers un projet de développement d'un mini-rootkit Windows, dans le cadre d'un cours de sécurité avancée dispensé par Lionel Auroux à l'École 2600.
 
