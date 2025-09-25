@@ -95,7 +95,7 @@ Something strange appeared in the title field corresponding to my username - the
 ![Username Field Anomaly](../assets/blog/HTB-Hacknet/image2.png)
 
 ### SSTI Discovery Process
-I realized that the SSTI payload `{%debug%}` was actually being rendered (but showing nothing visible). Since that field renders the username from Django, I tested again by changing my username to `{{users}}` and made a request to see the likes.
+I realized that the SSTI payload `{ %debug% }` was actually being rendered (but showing nothing visible). Since that field renders the username from Django, I tested again by changing my username to `{{users}}` and made a request to see the likes.
 
 **Bingo!** The template was processed:
 
