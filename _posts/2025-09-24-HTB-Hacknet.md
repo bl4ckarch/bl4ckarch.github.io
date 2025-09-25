@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Hack The Box Hacknet Write-up"
-category : 
-tags :  
+category : Writeup
+tags: django, ssti, template-injection, pickle-deserialization, cache-poisoning, gpg-cracking,
 ---
 
 # HackNet - HackTheBox Writeup
