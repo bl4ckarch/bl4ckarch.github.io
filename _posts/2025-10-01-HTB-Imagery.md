@@ -7,7 +7,7 @@ tags: werkzeug python-flask stored-xss cookie-theft path-traversal lfi-db-read m
 
 ---
 
-# HackTheBox - Imagery Walkthrough
+
 
 ![Imagery Info Card](https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/662ccbe3935d62aee031d620014adac4.png)
 
