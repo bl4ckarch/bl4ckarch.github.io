@@ -4,7 +4,6 @@ title: "Android Exploitation Lab: Compromising a Pixel 6a with Meterpreter"
 date: 2025-10-04 21:41:58 +0200
 categories: blogPost
 tags: metasploit msfvenom android penetration-testing red-team
-author: bl4ckarch
 ---
 
 ## Executive Summary
