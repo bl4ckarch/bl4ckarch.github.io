@@ -1,12 +1,11 @@
 ---
 title: "Hackthebox - Unintended PROLAB"
-date: 2025-01-15
+date: 2025-12-11
 categories: writeup-prolab
 tags: active-directory samba docker lateral-movement gitea mattermost postgresql
 ---
 
 Unintended is an intermediate mini pro lab on Hack The Box (originally a medium difficulty chain on Vulnlab) created by kavigihan.
-
 It consists of three Linux machines:
 - **10.13.38.57** - DC (Domain Controller)
 - **10.13.38.58** - BACKUP
@@ -15,7 +14,7 @@ It consists of three Linux machines:
 ## nmap
 
 ```bash
-└─$ sudo nmap 10.13.38.57-59 -p-
+└─$ sudo nmap 10.13.38.57-59 -p-    
 Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-04-25 20:05 CEST
 Nmap scan report for 10.13.38.57
 Host is up (0.047s latency).
@@ -51,11 +50,9 @@ Not shown: 65533 closed tcp ports (reset)
 PORT   STATE SERVICE
 21/tcp open  ftp
 22/tcp open  ssh
-
 Nmap done: 3 IP addresses (3 hosts up) scanned in 84.97 seconds
 ```
-
-Running a more detailed scan with `-sC -sV`:
+Running a more detailed scan with `-sC -sVT`:
 
 ```bash
 └─$ sudo nmap 10.13.38.57-59 -p- -sC -sV
