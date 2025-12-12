@@ -4,7 +4,7 @@ title: "Hackthebox - Mythical PROLAB"
 date: 2025-12-12
 categories: writeup-prolab
 author: bl4ckarch
-tags: [active-directory, mythic-c2, adcs, esc4, esc1, domain-trust, mssql, potato]
+tags: active-directory mythic-c2 adcs esc4 esc1 domain-trust mssql potato
 ---
 
 Mythical is an intermediate mini pro lab on Hack The Box (originally a chain on Vulnlab) created by XCT.
