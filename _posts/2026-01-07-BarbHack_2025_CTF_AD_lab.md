@@ -7,7 +7,6 @@ tags: ActiveDirectory NTLM-Relay NTLMv1 RBCD SPN-less-RBCD Kerberos S4U2Self S4U
 author: Evariste (@bl4ckarch)
 ---
 
-# PIRATES.BRB - Barbhack 2025 AD Lab Writeup
 
 **Auteur:** Evariste (@bl4ckarch)  
 **Date:** Janvier 2026  
