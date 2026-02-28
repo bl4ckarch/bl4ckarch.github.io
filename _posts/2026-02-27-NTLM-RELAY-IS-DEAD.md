@@ -4,7 +4,7 @@ title: "NTLM Relay on Windows Server 2025, I spent 20 minutes convinced my lab w
 date: 2026-02-27
 categories: blogPost
 tags: NTLM relay active-directory windows-server-2025 msv1_0 ldaps coercion
-author: bl4ckarch
+
 ---
 
 Thought I skilled issued again.
