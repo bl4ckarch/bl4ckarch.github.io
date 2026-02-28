@@ -7,9 +7,12 @@ tags: NTLM relay active-directory windows-server-2025 msv1_0 ldaps coercion
 
 ---
 
-Thought I skilled issued again.
-Reread my commands. Checked the registry. Restarted ntlmrelayx. Went through the whole checklist. Turns out it wasn't me this time.
-NTLM relay is progressively going dark.
+I thought I had skilled issued again.
+Reread my commands. I checked the registry. Restarted ntlmrelayx. Went through the entire checklist. It turned out it wasn't me this time.
+
+When the victim DC is using Windows Server 2025, the classic cross-DC coerce and relay to LDAPS attack, which exploits a misconfigured 'LmCompatibilityLevel' to get NTLMv1+ESS out and remove the MIC, no longer works. No matter what the registry says. The attack has just died.
+
+NTLM relay is gradually becoming dark.
 
 ---
 
