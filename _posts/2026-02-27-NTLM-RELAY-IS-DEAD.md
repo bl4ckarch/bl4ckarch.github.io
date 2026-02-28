@@ -12,7 +12,7 @@ Reread my commands. I checked the registry. Restarted ntlmrelayx. Went through t
 
 When the victim DC is using Windows Server 2025, the classic cross-DC coerce and relay to LDAPS attack, which exploits a misconfigured 'LmCompatibilityLevel' to get NTLMv1+ESS out and remove the MIC, no longer works. No matter what the registry says. The attack has just died.
 
-NTLM relay is gradually becoming dark.
+NTLM relay is gradually going dark.
 
 ---
 
