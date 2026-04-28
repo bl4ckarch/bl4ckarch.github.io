@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "GOAD-Dracarys"
-date: 2025-04-28
 categories: writeup
 tags: AD goad glpi sqli kerberos dollar-ticket RBCD delegation ghost-spn
 ---
