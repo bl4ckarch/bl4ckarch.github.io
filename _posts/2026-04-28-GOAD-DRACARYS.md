@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "GOAD - Dracarys"
+title: "GOAD-Dracarys"
 date: 2025-04-28
-categories: writeup-prolab
-tags: active-directory goad glpi sqli kerberos dollar-ticket rbcd delegation ghost-spn]
+categories: writeup
+tags: active-directory goad glpi sqli kerberos dollar-ticket rbcd delegation ghost-spn
 ---
 
 Dracarys is the latest GOAD lab made by MayFly, featuring some spicy Kerberos delegation abuse and a fun Linux privesc technique I hadn't seen before.
